@@ -1,0 +1,37 @@
+# git aliases: https://git-scm.com/book/en/v2/Git-Basics-Git-Aliases
+[user]
+	name = Logan Smith
+	email = logan@impossible.aero
+
+[core]
+	#editor = subl -n -w
+	editor = vim
+
+[alias]
+	#### add
+	# Might consider adding "-- all" to this one
+	a = add
+	#### branch
+	b = branch
+	ba = branch --add
+	bd = branch --delete
+	bdd = branch --delete --force
+	#### checkout
+	co = checkout
+	#### commit
+	c = commit
+	cm = commit -m
+	#### fetch
+	f = fetch
+	#### log
+	l = log --oneline
+	#### push
+	p = push
+	#### status
+	s = status
+
+[filter "lfs"]
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
