@@ -1,0 +1,10 @@
+{
+	// Changed from package default of "project"
+	"default_root" : "current",
+	// Changed from package default of "windows"
+    "completion_type" : "nix",
+    // Changed from package default of "false"
+    "vcs_management" : true,
+    // Changed from package default of ""
+    "copy_default" : "<filename>"
+}

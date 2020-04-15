@@ -1,0 +1,42 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"AdvancedNewFile",
+		"AlignTab",
+		"ARM Assembly",
+		"AVR-ASM-Sublime",
+		"C Improved",
+		"CMake",
+		"CTags",
+		"Devicetree DTS Highlighting",
+		"Dockerfile Syntax Highlighting",
+		"DoxyDoxygen",
+		"Kconfig Syntax Highlight",
+		"LaTeXTools",
+		"LinkerScript",
+		"Mako",
+		"MarkdownEditing",
+		"MIPS Syntax",
+		"Monokai Extended",
+		"Ninja",
+		"Origami",
+		"Package Control",
+		"PackageDev",
+		"SideBarEnhancements",
+		"SublimeCodeIntel",
+		"Terminal",
+		"Text Pastry",
+		"TodoReview",
+		"udev rules",
+		"VCS Gutter",
+		"Verilog",
+		"VHDL"
+	],
+	"repositories":
+	[
+	]
+}

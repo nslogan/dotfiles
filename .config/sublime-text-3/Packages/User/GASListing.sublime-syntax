@@ -1,0 +1,116 @@
+%YAML 1.2
+---
+
+
+# Generic GNU GAS Sublime Text 3 syntax
+# By Dean Camera, dean [at] fourwalledcubicle [dot] com
+
+
+file_extensions:
+  - lss
+scope: source.gaslisting
+
+variables:
+  # Hex digit, case-insensitive
+  hex_digit: '[0-9a-fA-F]'
+
+contexts:
+  main:
+    # GAS comments, full line
+    - match: ';'
+      scope: punctuation.definition.comment.gaslisting
+      push: line_comment
+
+    # C-like comments, full line
+    - match: '//'
+      scope: punctuation.definition.comment.gaslisting
+      push: line_comment
+
+    # C-like comments, multi-line
+    - match: '/\*'
+      scope: punctuation.definition.comment.gaslisting
+      push: multi_line_comment
+
+    # Line numbers, followed by an instruction
+    - match: '\b{{hex_digit}}+:'
+      push: line_number
+
+    # Line numbers, followed by a symbol name
+    - match: '^\b{{hex_digit}}+\b'
+      scope: constant.numeric.gaslisting
+      push: line_ident
+
+  line_ident:
+    # Start of symbol name
+    - match: "<"
+      scope: entity.name.name.begin.gaslisting
+      push: symbol_tag
+
+    # End of line (error condition)
+    - match: $
+      pop: true
+
+  line_number:
+    - meta_scope: constant.numeric.gaslisting
+
+    # Tab separator, start of the instruction encoding
+    - match: '\t'
+      push: instruction_encoding
+
+    # End of line (error condition)
+    - match: $
+      pop: true
+
+  instruction_encoding:
+    - meta_scope: keyword.gaslisting
+
+    # Tab separator or double space, start of the instruction mnemonic/ASCII
+    # data dump
+    - match: "(\t|  )"
+      push: instruction_name
+
+    # End of line (error condition)
+    - match: $
+      pop: true
+
+  instruction_name:
+    - meta_scope: string.gaslisting
+
+    # Start of GAS comment
+    - match: ";"
+      push: line_comment
+
+    # Start of C-like comment
+    - match: '//'
+      scope: punctuation.definition.comment.gaslisting
+      push: line_comment
+
+    # End of line
+    - match: $
+      pop: true
+
+  symbol_tag:
+    - meta_scope: entity.name.gaslisting
+
+    # End of symbol name
+    - match: ">"
+      scope: entity.name.end
+      pop: true
+
+    # End of line (error condition)
+    - match: $
+      pop: true
+
+  line_comment:
+    - meta_scope: comment.line.gaslisting
+
+    # End of line
+    - match: $
+      pop: true
+
+  multi_line_comment:
+    - meta_scope: comment.line.gaslisting
+
+    # End of comment
+    - match: \*/
+      pop: true

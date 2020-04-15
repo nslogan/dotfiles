@@ -1,0 +1,22 @@
+{
+	"patterns": {
+		"TODO": "TODO:(?P<todo>.*)$",
+		"XXX": "XXX:(?P<xxx>.*)$",
+		"FIXME": "FIXME:(?P<fixme>.*)$",
+		"NOTE": "NOTE:(?P<note>.*)$"
+	},
+	"patterns_weight": {
+		"TODO": 0,
+		"FIXME": 1,
+		"XXX": 2,
+		"NOTE": 3
+	},
+	"exclude_folders": [
+		"*.git*",
+		"*bin*",
+		"*build*",
+		"*dev*",
+		"*docs*",
+		"*__pycache__*"
+	]
+}

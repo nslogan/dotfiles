@@ -1,0 +1,11 @@
+{
+	"cmd": ["grip","$file","--export"],
+	"selector": "text.html.markdown",
+	"variants": [
+		{ "name": "Live Preview",
+		  "linux": {
+		  	"cmd": ["grip","$file","-b"]
+		  }
+		}
+	]
+}
