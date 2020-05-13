@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# -- GNOME Desktop settings -- #
+
+# Remap caps to escape, both shift to caps
+gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape','shift:both_capslock']"
+
+# Disable tap-to-click on touchpad
+gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click false
+
+
