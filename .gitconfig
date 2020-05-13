@@ -1,11 +1,12 @@
 # git aliases: https://git-scm.com/book/en/v2/Git-Basics-Git-Aliases
 [user]
 	name = Logan Smith
-	email = logan@impossible.aero
+	email = logan@logansmith.org
 
 [core]
 	#editor = subl -n -w
 	editor = vim
+	excludesfile = /home/logan/.gitignore
 
 [alias]
 	#### add

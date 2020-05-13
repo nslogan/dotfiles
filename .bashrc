@@ -118,8 +118,16 @@ if ! shopt -oq posix; then
 fi
 
 # Modify path
+# TODO: Wrap this to test for ~/bin
 export PATH=~/bin:$PATH
 export PATH=/snap/bin:$PATH
+
+# Python local install path
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+# TODO: Source Xilinx path so ise and friends show up
 
 # TODO: Add wrapper to check if this exists
 export PATH=/opt/gcc-arm-none-eabi-7-2017-q4-major/bin:$PATH
