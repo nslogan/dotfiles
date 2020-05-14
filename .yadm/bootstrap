@@ -37,7 +37,7 @@ sudo apt update
 
 # Install all my applications
 sudo apt install -y --install-recommends \
-	chromium \
+	chromium-browser \
 	cmake \
 	docker-ce \
 	filezilla \
