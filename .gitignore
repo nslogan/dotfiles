@@ -1,3 +1,7 @@
 
 # Python
 __pycache__/
+
+# Text editor settings
+*.sublime-project
+*.sublime-workspace

@@ -2,7 +2,8 @@
 	"added_words":
 	[
 		"microcontroller",
-		"gauge"
+		"gauge",
+		"bootloader"
 	],
 	"binary_file_patterns":
 	[
@@ -77,12 +78,11 @@
 	"font_options":
 	[
 	],
-	"font_size": 11,
+	"font_size": 18,
 	"highlight_line": true,
 	"ignored_packages":
 	[
 		"AVR-ASM-Sublime",
-		"C Improved",
 		"Fix Mac Path",
 		"Markdown",
 		"Vintage"

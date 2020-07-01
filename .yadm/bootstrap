@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# -- User -- #
+# TODO: This group might not exist yet, will it be created (?)
+# sudo usermod -aG docker ${USER}
+
 # -- GNOME Desktop settings -- #
 
 # Remap caps to escape, both shift to caps
@@ -7,6 +11,11 @@ gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape','shift
 
 # Disable tap-to-click on touchpad
 gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click false
+
+# Configure screen blanking to 30 minute timeout (not available in GUI)
+gsettings set org.gnome.desktop.session idle-delay 1800
+gsettings set org.gnome.desktop.screensaver lock-delay 0
+gsettings set org.gnome.desktop.screensaver lock-enabled true
 
 # -- Repositories -- #
 
@@ -43,15 +52,32 @@ sudo apt install -y --install-recommends \
 	filezilla \
 	git \
 	insync \
-	meson \
 	ncdu \
 	ninja-build \
 	npm \
+	picocom \
 	python3-pip \
 	slack-desktop \
 	spotify-client \
 	sublime-text \
 	sublime-merge \
+	transmission \
 	vim \
 	vlc \
 	xclip
+
+# Others not on list yet:
+# bison
+# flex
+# inkscape
+# npm
+# openocd
+# 
+# Specific to st-utils
+# libusb-1.0
+# libusb-1.0-0-dev
+
+# -- Python -- #
+# pip3 install --user \
+# 	meson \
+# 	pipenv

@@ -17,6 +17,7 @@
 		"DoxyDoxygen",
 		"Jinja2",
 		"Kconfig Syntax Highlight",
+		"Lark Grammar Syntax",
 		"LaTeXTools",
 		"LinkerScript",
 		"Mako",
