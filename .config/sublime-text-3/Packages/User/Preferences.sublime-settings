@@ -3,7 +3,8 @@
 	[
 		"microcontroller",
 		"gauge",
-		"bootloader"
+		"bootloader",
+		"indices"
 	],
 	"binary_file_patterns":
 	[
@@ -78,14 +79,14 @@
 	"font_options":
 	[
 	],
-	"font_size": 18,
+	"font_size": 15,
 	"highlight_line": true,
 	"ignored_packages":
 	[
 		"AVR-ASM-Sublime",
 		"Fix Mac Path",
 		"Markdown",
-		"Vintage"
+		"Vintage",
 	],
 	"ignored_words":
 	[
@@ -103,5 +104,6 @@
 	"tab_size": 4,
 	"theme": "Default.sublime-theme",
 	"ui_scale": 1.0,
-	"word_wrap": true
+	"word_wrap": true,
+	"hardware_acceleration": "opengl",
 }

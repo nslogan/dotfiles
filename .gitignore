@@ -5,3 +5,7 @@ __pycache__/
 # Text editor settings
 *.sublime-project
 *.sublime-workspace
+
+# Folder I'm going to use to keep my project files in (when there are more than
+# one for a project)
+.st3/

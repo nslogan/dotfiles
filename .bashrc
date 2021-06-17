@@ -56,10 +56,15 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+# NOTE: WIP, cleaner git status integration TBD
+parse_git_branch() {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\e[91m\]$(parse_git_branch)\[\e[00m\]\$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$(parse_git_branch)\$ '
 fi
 unset color_prompt force_color_prompt
 
@@ -92,6 +97,17 @@ fi
 alias ll='ls -alhF'
 alias la='ls -A'
 alias l='ls -CF'
+alias l1='ls -1A'
+
+# Directory aliases
+function cd_n() {
+    if [ "$#" -eq 0 ]; then
+        cd ..
+    else
+        cd $(printf "%0.s../" $(seq 1 $1 ))
+    fi
+}
+alias ..=cd_n
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -117,10 +133,21 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# `*PATH` modifications
+# TODO: Write a function that:
+# - Checks if the path provided exists and is a directory
+# - Checks that the path is is not already in the target path
+# - Can work for a general variable (e.g. PATH or PYTHONPATH)
+# - Can append or prepend
+# - Can take a set of paths
+#
+# NOTE: Probably want to implement a base function that takes "prepend" or "append" as arguments, then alias a set on top of that of arguments
+
 # Modify path
 # TODO: Wrap this to test for ~/bin
-export PATH=~/bin:$PATH
-export PATH=/snap/bin:$PATH
+PATH=$HOME/bin:$PATH
+PATH=/snap/bin:$PATH
+PATH=$HOME/.poetry/bin:$PATH
 
 # Python local install path
 if [ -d "$HOME/.local/bin" ] ; then
@@ -130,5 +157,18 @@ fi
 # TODO: Source Xilinx path so ise and friends show up
 
 # TODO: Add wrapper to check if this exists
-export PATH=/opt/gcc-arm-none-eabi-7-2017-q4-major/bin:$PATH
+# TODO: This is a machine-specific thing
+# export PATH=/opt/gcc-arm-none-eabi-7-2017-q4-major/bin:$PATH
 
+# More aliases
+alias xdg-open="xdg-open &> /dev/null"
+
+# if [ -d "/opt/Xilinx" ]; then
+#     source "/opt/Xilinx/14.7/ISE_DS/settings64.sh"
+# fi
+
+# -- Environment variables --
+# Python path
+export PYTHONPATH=/usr/local/lib/python3/dist-packages:$PYTHONPATH
+
+export STOW_DIR=/usr/local/stow

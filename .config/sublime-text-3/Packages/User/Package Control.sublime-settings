@@ -8,13 +8,15 @@
 		"AdvancedNewFile",
 		"AlignTab",
 		"ARM Assembly",
-		"AVR-ASM-Sublime",
 		"C Improved",
 		"CMake",
+		"CopyWithLineNumbersReloaded",
 		"CTags",
 		"Devicetree DTS Highlighting",
 		"Dockerfile Syntax Highlighting",
 		"DoxyDoxygen",
+		"Git blame",
+		"Intel HEX",
 		"Jinja2",
 		"Kconfig Syntax Highlight",
 		"Lark Grammar Syntax",
@@ -28,6 +30,7 @@
 		"Origami",
 		"Package Control",
 		"PackageDev",
+		"Protobuf Syntax Hightlighting",
 		"Sass",
 		"SideBarEnhancements",
 		"SublimeCodeIntel",
@@ -35,12 +38,13 @@
 		"Terminal",
 		"Text Pastry",
 		"TodoReview",
+		"TOML",
 		"udev rules",
 		"VCS Gutter",
 		"Verilog",
-		"VHDL"
+		"VHDL",
 	],
 	"repositories":
 	[
-	]
+	],
 }

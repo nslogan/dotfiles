@@ -11,6 +11,7 @@ gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape','shift
 
 # Disable tap-to-click on touchpad
 gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click false
+gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll false
 
 # Configure screen blanking to 30 minute timeout (not available in GUI)
 gsettings set org.gnome.desktop.session idle-delay 1800
@@ -38,14 +39,15 @@ echo "deb http://apt.insync.io/ubuntu bionic non-free contrib" | sudo tee /etc/a
 # Make sure apt-transport-https, ca-certificates, and software-properties-common
 # are installed *before* trying to update with HTTPS repos (e.g. ST3, Docker,
 # Slack)
-sudo apt -y --install-recommends install apt-transport-https ca-certificates \
+sudo apt-get -y --install-recommends install apt-transport-https ca-certificates \
 	software-properties-common
 
 # Perform an update with all of the new repos
-sudo apt update
+sudo apt-get update
 
 # Install all my applications
-sudo apt install -y --install-recommends \
+# TODO: Split these into "gui" and "no-gui"
+sudo apt-get install -y --install-recommends \
 	chromium-browser \
 	cmake \
 	docker-ce \
@@ -59,12 +61,14 @@ sudo apt install -y --install-recommends \
 	python3-pip \
 	slack-desktop \
 	spotify-client \
+	stow \
 	sublime-text \
 	sublime-merge \
 	transmission \
 	vim \
 	vlc \
-	xclip
+	xclip \
+	zutils
 
 # Others not on list yet:
 # bison

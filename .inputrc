@@ -1,0 +1,14 @@
+# Making a ~/.inputrc file overrides the /etc/inputrc file which in Ubuntu
+# includes settings to use ctrl-arrow. See
+# https://stackoverflow.com/questions/5029118/bash-ctrl-to-move-cursor-between-words-strings.
+
+# Include Ubuntu default bindings
+$include  /etc/inputrc
+
+# Make GDB ctrl-l behave like bash default
+$if Gdb
+"\C-l": "shell clear\n"
+$endif
+
+"\ep": history-search-backward
+"\en": history-search-forward

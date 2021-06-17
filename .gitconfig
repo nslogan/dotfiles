@@ -12,27 +12,68 @@
 	#### add
 	# Might consider adding "-- all" to this one
 	a = add
+	au = add -u
 	#### branch
 	b = branch
 	ba = branch --add
 	bd = branch --delete
 	bdd = branch --delete --force
+	# 'branch archive'
+	#   Create tag `archive/<branch-name>` where `<branch-name>` is either the
+	#   first argument passed or the current branch if no argument is passed
+	#   
+	#   DEPENDS: aliases `bn`, `co`, `default-branch`
+	#   
+	#   TODO: This just assumes everything works...
+	bar = "!f() { b=$1; if [ -z "$1" ]; then b=$(git bn); git co $(git default-branch); fi; git tag "archive/$b" "$b"; git branch --delete --force "$b"; }; f"
 	#### checkout
 	co = checkout
+	# 'checkout default'
+	cod = "!git co $(git default-branch)"
 	#### commit
 	c = commit
 	cm = commit -m
+	ca = commit --amend --no-edit
 	#### fetch
 	f = fetch
+	#### help
+	h = help
 	#### log
 	l = log --oneline
 	#### push
 	p = push
 	#### status
 	s = status
+	#### Experimental
+	# Get branch name
+	bn = "!git rev-parse --abbrev-ref HEAD"
+	# Publish
+	# pub = "!f() { b="$(git bn)"; git push ${1:-$(git config branch.${b}.remote)} HEAD:$(git config branch.${b}.merge); }; f"
+	# pub = "!f() { b="$(git bn)"; git push origin HEAD:$(git config branch.${b}.merge); }; f"
+	# 
+	# NOTE: I'm going to combine my tmp.sh 'set remote branch properly' with this, so it will also
+	#       handle setting the upstream properly. What I'm thinking through still is how to set the
+	#       remote, optionally, plus also add in the ability to do a 'force' / add other options.
+	pub = "!f() { b="$(git bn)"; git push $@ $(git config branch.${b}.remote) HEAD:$(git config branch.${b}.merge); }; f"
+	root = rev-parse --show-toplevel
+	default-branch = !git rev-parse --abbrev-ref origin/HEAD | sed 's@^origin/@@'
+	#
+	hide = update-index --assume-unchanged
+	unhide = update-index --no-assume-unchanged
+	unhide-all = update-index --really-refresh
+	hidden = !git ls-files -v | grep \"^[a-z]\"
+	# hidden = "!f(){ git -C \"$GIT_PREFIX\" ls-files -v \"$@\" | grep \"^[a-z]\";}; f"
+	ignored = !git status -s --ignored | grep \"^!!\"
+	# ignored = "!f(){ git -C \"$GIT_PREFIX\" status -s --ignored \"$@\" | grep \"^!!\";}; f"
 
 [filter "lfs"]
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
+
+# NOTE: If the file doesn't exist this silently fails (which is the desired behavior)
+[include]
+	path = .gitconfig_work
+[init]
+	defaultBranch = main
