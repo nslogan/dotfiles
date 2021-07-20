@@ -4,7 +4,9 @@
 		"microcontroller",
 		"gauge",
 		"bootloader",
-		"indices"
+		"indices",
+		"sustainably",
+		"mentorship"
 	],
 	"binary_file_patterns":
 	[
@@ -105,5 +107,4 @@
 	"theme": "Default.sublime-theme",
 	"ui_scale": 1.0,
 	"word_wrap": true,
-	"hardware_acceleration": "opengl",
 }
