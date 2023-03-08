@@ -44,6 +44,8 @@
 	p = push
 	#### status
 	s = status
+	#### switch
+	sw = switch
 	#### Experimental
 	# Get branch name
 	bn = "!git rev-parse --abbrev-ref HEAD"

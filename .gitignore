@@ -9,3 +9,17 @@ __pycache__/
 # Folder I'm going to use to keep my project files in (when there are more than
 # one for a project)
 .st3/
+
+# Ephemeral dotfiles
+.gdb_history
+
+# Backup files
+*.bak
+
+# docker-compose environment (including my own environment .env.* files)
+*.env
+*.env.*
+
+# CMake local configuration
+CMakeUserPresets.json
+
