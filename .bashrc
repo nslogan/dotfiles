@@ -113,6 +113,9 @@ alias ..=cd_n
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
+# NOTE: My .gitconfig has `git root` as an alias for the `rev-parse` bit below
+alias gr='cd $(git rev-parse --show-toplevel)'
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -136,27 +139,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# `*PATH` modifications
-# TODO: Write a function that:
-# - Checks if the path provided exists and is a directory
-# - Checks that the path is is not already in the target path
-# - Can work for a general variable (e.g. PATH or PYTHONPATH)
-# - Can append or prepend
-# - Can take a set of paths
-#
-# NOTE: Probably want to implement a base function that takes "prepend" or "append" as arguments, then alias a set on top of that of arguments
-
-# Modify path
-# TODO: Wrap this to test for ~/bin
-PATH=$HOME/bin:$PATH
-PATH=/snap/bin:$PATH
-PATH=$HOME/.poetry/bin:$PATH
-
-# Python local install path
-if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
-
 # TODO: Source Xilinx path so ise and friends show up
 
 # TODO: Add wrapper to check if this exists
@@ -169,9 +151,3 @@ alias xdg-open="xdg-open &> /dev/null"
 # if [ -d "/opt/Xilinx" ]; then
 #     source "/opt/Xilinx/14.7/ISE_DS/settings64.sh"
 # fi
-
-# -- Environment variables --
-# Python path
-export PYTHONPATH=/usr/local/lib/python3/dist-packages:$PYTHONPATH
-
-export STOW_DIR=/usr/local/stow
