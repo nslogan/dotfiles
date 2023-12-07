@@ -9,6 +9,7 @@
 		"AlignTab",
 		"ARM Assembly",
 		"Autotools",
+		"Awk",
 		"BazelSyntax",
 		"C Improved",
 		"CMake",
@@ -29,6 +30,7 @@
 		"Package Control",
 		"PackageDev",
 		"Protobuf Syntax Hightlighting",
+		"Sass",
 		"ScopeHunter",
 		"SideBarEnhancements",
 		"SublimeCodeIntel",
@@ -40,6 +42,7 @@
 		"VCS Gutter",
 		"Verilog",
 		"VHDL",
+		"Zig Language",
 	],
 	"repositories":
 	[

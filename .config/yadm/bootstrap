@@ -11,6 +11,7 @@ gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape','shift
 
 # Disable tap-to-click on touchpad
 gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click false
+# Set scroll direction like a sane person
 gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll false
 
 # Configure screen blanking to 30 minute timeout (not available in GUI)
@@ -20,55 +21,76 @@ gsettings set org.gnome.desktop.screensaver lock-enabled true
 
 # -- Repositories -- #
 
+# Dependencies to support HTTPS repos (e.g. ST3, Docker, Slack)
+sudo apt-get -y --install-recommends install apt-transport-https ca-certificates \
+	curl gnupg software-properties-common
+
+# New key management strategy, 'apt-key add' is deprecated
+sudo install -m 0755 -d /etc/apt/keyrings
+
+# Collect system information
+ARCH=$(dpkg --print-architecture)
+CODENAME=$(. /etc/os-release && echo "$VERSION_CODENAME")
+
 # Add Sublime repo (dev)
-wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
-echo "deb https://download.sublimetext.com/ apt/dev/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+curl -fsSL https://download.sublimetext.com/sublimehq-pub.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/sublimehq-archive.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+echo \
+  "deb [arch=$ARCH signed-by=/etc/apt/keyrings/sublimehq-archive.gpg] https://download.sublimetext.com/ apt/dev" | \
+  sudo tee /etc/apt/sources.list.d/sublime-text.list > /dev/null
 
 # Add Spotify repo
-curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add - 
-echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+# NOTE: Disabling as of 2023-12-06; mostly using work laptop right now, may
+# revisit if I start using my personal Linux laptop more
+# curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add - 
+# echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
 
 # Add Docker repo
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+echo \
+  "deb [arch=$ARCH signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $CODENAME stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 # Add InSync repo
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ACCAF35C
-echo "deb http://apt.insync.io/ubuntu bionic non-free contrib" | sudo tee /etc/apt/sources.list.d/insync.list
-
-# Make sure apt-transport-https, ca-certificates, and software-properties-common
-# are installed *before* trying to update with HTTPS repos (e.g. ST3, Docker,
-# Slack)
-sudo apt-get -y --install-recommends install apt-transport-https ca-certificates \
-	software-properties-common
+# NOTE: Ibid. note for Spotify
+# sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ACCAF35C
+# echo "deb http://apt.insync.io/ubuntu bionic non-free contrib" | sudo tee /etc/apt/sources.list.d/insync.list
 
 # Perform an update with all of the new repos
 sudo apt-get update
 
 # Install all my applications
 # TODO: Split these into "gui" and "no-gui"
+# NOTE: As of 2023-12-06, removing: chromium-browser, insync, npm, spotify-client, transmission, vlc, zutils; adding: docker-ce-cli, containerd.io, docker-buildx-plugin, docker-compose-plugin, tmux
 sudo apt-get install -y --install-recommends \
-	chromium-browser \
 	cmake \
 	docker-ce \
+	docker-ce-cli \
+	containerd.io \
+	docker-buildx-plugin \
+	docker-compose-plugin \
 	filezilla \
 	git \
-	insync \
 	ncdu \
 	ninja-build \
-	npm \
 	picocom \
 	python3-pip \
 	slack-desktop \
-	spotify-client \
 	stow \
 	sublime-text \
 	sublime-merge \
-	transmission \
+	tmux \
 	vim \
-	vlc \
-	xclip \
-	zutils
+	xclip
+
+# TODO:
+# 
+# Things that live in my "apps" folder
+# - Add obsidian, would also be neat to get "desktop" support (e.g. icon,
+#   searchable with super key) working
+# - Add Saleae Logic
 
 # Others not on list yet:
 # bison

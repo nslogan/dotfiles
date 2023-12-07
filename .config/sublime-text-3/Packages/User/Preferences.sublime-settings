@@ -10,6 +10,9 @@
 		"modularity",
 		"mentorship",
 		"observability",
+		"executables",
+		"journaling",
+		"templatize",
 	],
 	"binary_file_patterns":
 	[
@@ -84,10 +87,12 @@
 	"font_options":
 	[
 	],
-	"font_size": 15,
+	"font_size": 14,
 	"highlight_line": true,
 	"ignored_packages":
 	[
+		"Terminal",
+		"Vintage",
 	],
 	"ignored_words":
 	[

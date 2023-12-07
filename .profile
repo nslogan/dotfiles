@@ -51,9 +51,11 @@ fi
 # PATH=$HOME/.poetry/bin:$PATH
 
 # Not sure if these are needed, either
-# PATH=$PATH:/usr/local/go/bin
-# # For `go install`
-# PATH=$PATH:$(go env GOPATH)/bin
+if [ -d "/usr/local/go/bin" ]; then
+    PATH=$PATH:/usr/local/go/bin
+    # For `go install`
+    PATH=$PATH:$(go env GOPATH)/bin
+fi
 
 # -- Environment variables --
 # GNU Radio required variables
@@ -65,3 +67,4 @@ export PYTHONPATH=/usr/lib/python3/dist-packages:/usr/local/lib/python3.8/dist-p
 export PYTHONPATH=/usr/local/lib/python3/dist-packages:$PYTHONPATH
 
 export STOW_DIR=/usr/local/stow
+. "$HOME/.cargo/env"

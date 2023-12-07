@@ -23,3 +23,5 @@ __pycache__/
 # CMake local configuration
 CMakeUserPresets.json
 
+# ccache directory
+.ccache/
