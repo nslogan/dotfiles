@@ -151,4 +151,4 @@ alias xdg-open="xdg-open &> /dev/null"
 # if [ -d "/opt/Xilinx" ]; then
 #     source "/opt/Xilinx/14.7/ISE_DS/settings64.sh"
 # fi
-. "$HOME/.cargo/env"
+

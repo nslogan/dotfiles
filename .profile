@@ -67,4 +67,8 @@ export PYTHONPATH=/usr/lib/python3/dist-packages:/usr/local/lib/python3.8/dist-p
 export PYTHONPATH=/usr/local/lib/python3/dist-packages:$PYTHONPATH
 
 export STOW_DIR=/usr/local/stow
-. "$HOME/.cargo/env"
+
+if [ -r "$HOME/.cargo/env" ]; then
+    source "$HOME/.cargo/env"
+fi
+
