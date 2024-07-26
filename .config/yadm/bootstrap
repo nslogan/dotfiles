@@ -13,6 +13,18 @@
 # Remap caps to escape, both shift to caps
 gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape','shift:both_capslock']"
 
+# Set up keyboard shortcuts
+gsettings set org.gnome.desktop.wm.keybindings switch-windows "['<Super>Tab']"
+gsettings set org.gnome.desktop.wm.keybindings switch-windows-backward "['<Shift><Super>Tab']"
+gsettings set org.gnome.desktop.wm.keybindings switch-applications "['<Alt>Tab']"
+gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "['<Shift><Alt>Tab']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys terminal "['<Super>T']"
+
+# Configure dock (auto-hide, position bottom)
+gsettings set org.gnome.shell.extensions.dash-to-dock dock-position "BOTTOM"
+gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
+gsettings set org.gnome.shell.extensions.dash-to-dock autohide true
+
 # Disable tap-to-click on touchpad
 gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click false
 # Set scroll direction like a sane person
@@ -22,6 +34,20 @@ gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll false
 gsettings set org.gnome.desktop.session idle-delay 1800
 gsettings set org.gnome.desktop.screensaver lock-delay 0
 gsettings set org.gnome.desktop.screensaver lock-enabled true
+
+# File browser settings
+gsettings set org.gtk.Settings.FileChooser show-hidden true
+
+# Configure terminal profile
+TERM_PROFILE=$(gsettings get org.gnome.Terminal.ProfilesList default)
+TERM_PROFILE=${TERM_PROFILE:1:-1}
+TERM_GSETTING="org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$TERM_PROFILE/"
+gsettings set $TERM_GSETTING use-theme-transparency false
+gsettings set $TERM_GSETTING background-color 'rgb(46,52,54)'
+gsettings set $TERM_GSETTING foreground-color 'rgb(211,215,207)'
+gsettings set $TERM_GSETTING palette "['rgb(46,52,54)', 'rgb(204,0,0)', 'rgb(78,154,6)', 'rgb(196,160,0)', 'rgb(52,101,164)', 'rgb(117,80,123)', 'rgb(6,152,154)', 'rgb(211,215,207)', 'rgb(85,87,83)', 'rgb(239,41,41)', 'rgb(138,226,52)', 'rgb(252,233,79)', 'rgb(114,159,207)', 'rgb(173,127,168)', 'rgb(52,226,226)', 'rgb(238,238,236)']"
+gsettings set $TERM_GSETTING use-transparent-background true
+gsettings set $TERM_GSETTING background-transparency-percent 11
 
 # -- Repositories -- #
 
@@ -36,6 +62,9 @@ sudo install -m 0755 -d /etc/apt/keyrings
 ARCH=$(dpkg --print-architecture)
 CODENAME=$(. /etc/os-release && echo "$VERSION_CODENAME")
 
+# Set up temporary keyring for any 'gpg --recv-keys' calls
+export GNUPGHOME="$(mktemp -d)"
+
 # Add Sublime repo (dev)
 curl -fsSL https://download.sublimetext.com/sublimehq-pub.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/sublimehq.gpg
 sudo chmod a+r /etc/apt/keyrings/sublimehq.gpg
@@ -49,6 +78,13 @@ echo \
 # curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add - 
 # echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
 
+# Add Visual Studio Code PPA
+curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /etc/apt/keyrings/microsoft-archive-keyring.gpg
+sudo chmod a+r /etc/apt/keyrings/microsoft-archive-keyring.gpg
+echo \
+  "deb [arch=$ARCH signed-by=/etc/apt/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/code stable main" | \
+  sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+
 # Add Docker repo
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
@@ -57,10 +93,40 @@ echo \
   $CODENAME stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
+# Add Wireshark PPA
+gpg --recv-keys --keyserver keyserver.ubuntu.com 0xA2E402B85A4B70CD78D8A3D9D875551314ECA0F0
+gpg --export 0xA2E402B85A4B70CD78D8A3D9D875551314ECA0F0 | sudo tee /etc/apt/keyrings/wireshark-archive-keyring.gpg >/dev/null
+sudo chmod a+r /etc/apt/keyrings/wireshark-archive-keyring.gpg
+echo "deb [arch=$ARCH signed-by=/etc/apt/keyrings/wireshark-archive-keyring.gpg] \
+        https://ppa.launchpadcontent.net/wireshark-dev/stable/ubuntu $CODENAME main" \ |
+  sudo tee /etc/apt/sources.list.d/wireshark.list >/dev/null
+
 # Add InSync repo
 # NOTE: Ibid. note for Spotify
 # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ACCAF35C
 # echo "deb http://apt.insync.io/ubuntu bionic non-free contrib" | sudo tee /etc/apt/sources.list.d/insync.list
+
+# NOTE: Switched to using snap of Obsidian; uncomment this block to re-enable
+# appimagelauncher and add 'appimagelauncher' to the 'apt-get install' list
+# below
+#
+# # Add appimagelauncher PPA
+# #
+# # NOTE: "PPA packages do *not* support updating" - It might make more sense to
+# # instead pull a version from [GitHub]
+# # (https://github.com/TheAssassin/AppImageLauncher)
+# #
+# # Used for AppImage management, e.g. Obsidian, Logic, etc.
+# gpg --recv-keys --keyserver keyserver.ubuntu.com 0xACD802F535B6F55D365285574AF9B16F75EF2FCA
+# gpg --export 0xACD802F535B6F55D365285574AF9B16F75EF2FCA | sudo tee /etc/apt/keyrings/appimagelauncher-team-archive-keyring.gpg >/dev/null
+# sudo chmod a+r /etc/apt/keyrings/appimagelauncher-team-archive-keyring.gpg
+# echo \
+#   "deb [arch=$ARCH signed-by=/etc/apt/keyrings/appimagelauncher-team-archive-keyring.gpg] https://ppa.launchpadcontent.net/appimagelauncher-team/stable/ubuntu \
+#   $CODENAME main" | \
+#   sudo tee /etc/apt/sources.list.d/appimagelauncher-team.list > /dev/null
+
+# Remove temporary gpg home
+unset GNUPGHOME
 
 # Perform an update with all of the new repos
 sudo apt-get update
@@ -69,15 +135,28 @@ sudo apt-get update
 # TODO: Split these into "gui" and "no-gui"
 # NOTE: As of 2023-12-06, removing: chromium-browser, insync, npm, spotify-client, transmission, vlc, zutils; adding: docker-ce-cli, containerd.io, docker-buildx-plugin, docker-compose-plugin, tmux
 # NOTE: As of 2023-12-13, renaming 'slack-desktop' to 'slack'
+#
+# NOTE: Already installed at beginning of script: apt-transport-https, ca-certificates, curl, gnupg, software-properties-common
 sudo apt-get install -y --install-recommends \
+	apt-file \
+	autoconf \
 	cmake \
+	cmake-curses-gui \
+	code \
+	containerd.io \
+	dconf-editor \
 	docker-ce \
 	docker-ce-cli \
-	containerd.io \
 	docker-buildx-plugin \
 	docker-compose-plugin \
 	filezilla \
+	g++ \
+	gcc \
+	gdb-multiarch \
 	git \
+	git-lfs \
+	google-chrome-stable \
+	gthumb \
 	ncdu \
 	ninja-build \
 	picocom \
@@ -88,7 +167,16 @@ sudo apt-get install -y --install-recommends \
 	sublime-merge \
 	tmux \
 	vim \
+	wireshark \
 	xclip
+
+# Other potential: openocd, ozone, protobuf-compiler, python3-venv, python3-sphinx, jlink, kdiff3, libprotobuf-dev, libprotoc-dev, wireshark
+
+# Install Obsidian; requires '--classic' mode
+sudo snap install --classic obisian
+
+# Download Obsidian
+# TODO
 
 # TODO:
 # 
