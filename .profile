@@ -33,6 +33,12 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
+if [ -d "$HOME/.nvm" ] ; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+fi
+
 # I don't know if this is necessary anymore :thinking:
 # # set PATH so it includes user's private bin if it exists
 # if [ -d "$HOME/.local/bin" ] ; then
@@ -50,9 +56,16 @@ fi
 # PATH=/snap/bin:$PATH
 # PATH=$HOME/.poetry/bin:$PATH
 
-# Not sure if these are needed, either
+# There are two different ways on Ubuntu to install Go, (1) via apt, (2) via
+# archive from go.dev (https://go.dev/doc/install).
+#
+# This logic is configured to give preference, if present, to the archive-based
+# install method by placing that path ahead of the system install
 if [ -d "/usr/local/go/bin" ]; then
-    PATH=$PATH:/usr/local/go/bin
+    PATH=/usr/local/go/bin:$PATH
+fi
+
+if go version >/dev/null 2>&1; then
     # For `go install`
     PATH=$PATH:$(go env GOPATH)/bin
 fi
@@ -72,3 +85,9 @@ if [ -r "$HOME/.cargo/env" ]; then
     source "$HOME/.cargo/env"
 fi
 
+# Configure java environment
+JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+if [ -d $JAVA_HOME ]; then
+    export JAVA_HOME
+    export PATH=$PATH:$JAVA_HOME/bin
+fi

@@ -13,6 +13,7 @@
 		"executables",
 		"journaling",
 		"templatize",
+		"genericize",
 	],
 	"binary_file_patterns":
 	[
@@ -55,7 +56,7 @@
 		"bazel-*/*"
 	],
 	"bold_folder_labels": true,
-	"color_scheme": "Packages/Color Scheme - Default/Monokai.tmTheme",
+	"color_scheme": "Monokai.sublime-color-scheme",
 	"fade_fold_buttons": false,
 	"file_exclude_patterns":
 	[
@@ -111,4 +112,5 @@
 	"theme": "Default.sublime-theme",
 	"ui_scale": 1.0,
 	"word_wrap": true,
+	"index_files": true,
 }

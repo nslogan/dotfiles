@@ -1,9 +1,6 @@
 #!/bin/bash
 
 # -- User -- #
-# TODO: This group might not exist yet, will it be created (?)
-# sudo usermod -aG docker ${USER}
-#
 # TODO: Should this script be idemopotent? I would need to add
 # a lot more checks for existing files, etc. Would be nice for
 # when I'm updating / fixing this script.
@@ -20,15 +17,24 @@ gsettings set org.gnome.desktop.wm.keybindings switch-applications "['<Alt>Tab']
 gsettings set org.gnome.desktop.wm.keybindings switch-applications-backward "['<Shift><Alt>Tab']"
 gsettings set org.gnome.settings-daemon.plugins.media-keys terminal "['<Super>T']"
 
+# Configure desktop
+gsettings set org.gnome.desktop.interface clock-format "12h"
+
+# Disable software updater popup
+gsettings set com.ubuntu.update-notifier no-show-notifications true
+
 # Configure dock (auto-hide, position bottom)
 gsettings set org.gnome.shell.extensions.dash-to-dock dock-position "BOTTOM"
 gsettings set org.gnome.shell.extensions.dash-to-dock dock-fixed false
 gsettings set org.gnome.shell.extensions.dash-to-dock autohide true
 
+# Configure touchpad
 # Disable tap-to-click on touchpad
 gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click false
 # Set scroll direction like a sane person
 gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll false
+# Enable two-finger right click
+gsettings set org.gnome.desktop.peripherals.touchpad click-method "fingers"
 
 # Configure screen blanking to 30 minute timeout (not available in GUI)
 gsettings set org.gnome.desktop.session idle-delay 1800
@@ -47,13 +53,22 @@ gsettings set $TERM_GSETTING background-color 'rgb(46,52,54)'
 gsettings set $TERM_GSETTING foreground-color 'rgb(211,215,207)'
 gsettings set $TERM_GSETTING palette "['rgb(46,52,54)', 'rgb(204,0,0)', 'rgb(78,154,6)', 'rgb(196,160,0)', 'rgb(52,101,164)', 'rgb(117,80,123)', 'rgb(6,152,154)', 'rgb(211,215,207)', 'rgb(85,87,83)', 'rgb(239,41,41)', 'rgb(138,226,52)', 'rgb(252,233,79)', 'rgb(114,159,207)', 'rgb(173,127,168)', 'rgb(52,226,226)', 'rgb(238,238,236)']"
 gsettings set $TERM_GSETTING use-transparent-background true
-gsettings set $TERM_GSETTING background-transparency-percent 11
+gsettings set $TERM_GSETTING background-transparency-percent 5
+
+# Set up the bin directory (if it doesn't exist)
+if [ ! -d "$HOME/bin" ] ; then
+  mkdir "$HOME/bin"
+fi
 
 # -- Repositories -- #
 
 # Dependencies to support HTTPS repos (e.g. ST3, Docker, Slack)
+#
+# NOTE: As of 2025-03-13 (time of this update), Kitware is now managing GPG keys
+# via the Ubuntu package 'kitware-archive-keyring', which installs keys in
+# '/usr/share/keyrings/'.
 sudo apt-get -y --install-recommends install apt-transport-https ca-certificates \
-	curl gnupg software-properties-common
+  curl gnupg software-properties-common kitware-archive-keyring
 
 # New key management strategy, 'apt-key add' is deprecated
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -101,29 +116,42 @@ echo "deb [arch=$ARCH signed-by=/etc/apt/keyrings/wireshark-archive-keyring.gpg]
         https://ppa.launchpadcontent.net/wireshark-dev/stable/ubuntu $CODENAME main" \ |
   sudo tee /etc/apt/sources.list.d/wireshark.list >/dev/null
 
+# Add CMake PPA
+echo \
+  "deb [arch=$ARCH signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ $CODENAME main" | \
+  sudo tee /etc/apt/sources.list.d/kitware.list > /dev/null
+
+# Add git PPA
+gpg --recv-keys --keyserver keyserver.ubuntu.com 0xF911AB184317630C59970973E363C90F8F1B6217
+gpg --export 0xF911AB184317630C59970973E363C90F8F1B6217 | sudo tee /etc/apt/keyrings/git-archive-keyring.gpg >/dev/null
+sudo chmod a+r /etc/apt/keyrings/git-archive-keyring.gpg
+echo "deb [arch=$ARCH signed-by=/etc/apt/keyrings/git-archive-keyring.gpg] \
+        https://ppa.launchpadcontent.net/git-core/ppa/ubuntu $CODENAME main" \ |
+  sudo tee /etc/apt/sources.list.d/git.list >/dev/null
+
 # Add InSync repo
 # NOTE: Ibid. note for Spotify
 # sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ACCAF35C
 # echo "deb http://apt.insync.io/ubuntu bionic non-free contrib" | sudo tee /etc/apt/sources.list.d/insync.list
 
-# NOTE: Switched to using snap of Obsidian; uncomment this block to re-enable
+# ~~NOTE: Switched to using snap of Obsidian; uncomment this block to re-enable
 # appimagelauncher and add 'appimagelauncher' to the 'apt-get install' list
-# below
+# below~~
 #
-# # Add appimagelauncher PPA
-# #
-# # NOTE: "PPA packages do *not* support updating" - It might make more sense to
-# # instead pull a version from [GitHub]
-# # (https://github.com/TheAssassin/AppImageLauncher)
-# #
-# # Used for AppImage management, e.g. Obsidian, Logic, etc.
-# gpg --recv-keys --keyserver keyserver.ubuntu.com 0xACD802F535B6F55D365285574AF9B16F75EF2FCA
-# gpg --export 0xACD802F535B6F55D365285574AF9B16F75EF2FCA | sudo tee /etc/apt/keyrings/appimagelauncher-team-archive-keyring.gpg >/dev/null
-# sudo chmod a+r /etc/apt/keyrings/appimagelauncher-team-archive-keyring.gpg
-# echo \
-#   "deb [arch=$ARCH signed-by=/etc/apt/keyrings/appimagelauncher-team-archive-keyring.gpg] https://ppa.launchpadcontent.net/appimagelauncher-team/stable/ubuntu \
-#   $CODENAME main" | \
-#   sudo tee /etc/apt/sources.list.d/appimagelauncher-team.list > /dev/null
+# Add appimagelauncher PPA
+#
+# NOTE: "PPA packages do *not* support updating" - It might make more sense to
+# instead pull a version from [GitHub]
+# (https://github.com/TheAssassin/AppImageLauncher)
+#
+# Used for AppImage management, e.g. Obsidian, Logic, etc.
+gpg --recv-keys --keyserver keyserver.ubuntu.com 0xACD802F535B6F55D365285574AF9B16F75EF2FCA
+gpg --export 0xACD802F535B6F55D365285574AF9B16F75EF2FCA | sudo tee /etc/apt/keyrings/appimagelauncher-team-archive-keyring.gpg >/dev/null
+sudo chmod a+r /etc/apt/keyrings/appimagelauncher-team-archive-keyring.gpg
+echo \
+  "deb [arch=$ARCH signed-by=/etc/apt/keyrings/appimagelauncher-team-archive-keyring.gpg] https://ppa.launchpadcontent.net/appimagelauncher-team/stable/ubuntu \
+  $CODENAME main" | \
+  sudo tee /etc/apt/sources.list.d/appimagelauncher-team.list > /dev/null
 
 # Remove temporary gpg home
 unset GNUPGHOME
@@ -137,46 +165,94 @@ sudo apt-get update
 # NOTE: As of 2023-12-13, renaming 'slack-desktop' to 'slack'
 #
 # NOTE: Already installed at beginning of script: apt-transport-https, ca-certificates, curl, gnupg, software-properties-common
+# 
+# In consideration:
+# - python3-virtualenv
 sudo apt-get install -y --install-recommends \
-	apt-file \
-	autoconf \
-	cmake \
-	cmake-curses-gui \
-	code \
-	containerd.io \
-	dconf-editor \
-	docker-ce \
-	docker-ce-cli \
-	docker-buildx-plugin \
-	docker-compose-plugin \
-	filezilla \
-	g++ \
-	gcc \
-	gdb-multiarch \
-	git \
-	git-lfs \
-	google-chrome-stable \
-	gthumb \
-	ncdu \
-	ninja-build \
-	picocom \
-	python3-pip \
-	slack \
-	stow \
-	sublime-text \
-	sublime-merge \
-	tmux \
-	vim \
-	wireshark \
-	xclip
+  appimagelauncher \
+  apt-file \
+  autoconf \
+  can-utils \
+  cmake \
+  cmake-curses-gui \
+  code \
+  containerd.io \
+  dconf-editor \
+  docker-ce \
+  docker-ce-cli \
+  docker-buildx-plugin \
+  docker-compose-plugin \
+  filezilla \
+  g++ \
+  gcc \
+  gdb-multiarch \
+  git \
+  git-lfs \
+  google-chrome-stable \
+  gthumb \
+  jq \
+  ncdu \
+  ninja-build \
+  picocom \
+  python-is-python3 \
+  python3-pip \
+  python3-venv \
+  slack \
+  stow \
+  sublime-text \
+  sublime-merge \
+  tmux \
+  tree \
+  vim \
+  wireshark \
+  xclip
 
 # Other potential: openocd, ozone, protobuf-compiler, python3-venv, python3-sphinx, jlink, kdiff3, libprotobuf-dev, libprotoc-dev, wireshark
 
 # Install Obsidian; requires '--classic' mode
-sudo snap install --classic obisian
+#
+# sudo snap install --classic obisian
+#
+# NOTE: The snap version of Obsidian doesn't respect the system default browser,
+# it always opens Firefox on my system; see [this
+# thread](https://forum.obsidian.md/t/obsidian-doesnt-use-default-browser-on-ubuntu-snap/68177/52).
+# I'm switching back to an AppImage.
+#
+# Intentionally placing in 'Downloads' as appimagelauncher will move the
+# AppImage.
+#
+# curl -fsSL -o "$HOME/Downloads/" https://github.com/obsidianmd/obsidian-releases/releases/latest/download/Obsidian-1.6.7.AppImage
+#
+# NOTE: Using link to 1.6.7 version because Obsidian doesn't name assets
+# generically, e.g. this release is named 'Obsidian-<version>.AppImage' instead
+# of 'Obsidian.AppImage'.
+curl -fsSL -o "$HOME/Downloads/Obsidian-1.6.7.AppImage" https://github.com/obsidianmd/obsidian-releases/releases/download/v1.6.7/Obsidian-1.6.7.AppImage
+# NOTE: I had to open the AppImage manually ('xdg-open Applications/<name>'
+# works) for this to actually register
+ail-cli integrate "$HOME/Downloads/Obsidian-1.6.7.AppImage"
 
-# Download Obsidian
-# TODO
+# Install / update Rust via rustup
+if ! command -v rustup &> /dev/null; then
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+else
+  rustup update
+fi
+
+# Install bazelisk latest; install it in user local bin as 'bazel' per
+# recommendation on [GitHub README for
+# bazelisk](https://github.com/bazelbuild/bazelisk)
+curl -fsSL -o "$HOME/bin/bazel" https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64
+chmod +x "$HOME/bin/bazel"
+
+# At this point docker should be installed
+sudo usermod -aG docker ${USER}
+
+# Also add to dialout for serial devices
+sudo usermod -aG dialout ${USER}
+
+# Add to wireshark group
+sudo usermod -aG wireshark ${USER}
+
 
 # TODO:
 # 
@@ -198,5 +274,5 @@ sudo snap install --classic obisian
 
 # -- Python -- #
 # pip3 install --user \
-# 	meson \
-# 	pipenv
+#   meson \
+#   pipenv
