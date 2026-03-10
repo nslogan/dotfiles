@@ -73,11 +73,20 @@ fi
 # -- Environment variables --
 # GNU Radio required variables
 # TODO: Check if these are still required
-export LD_LIBRARY_PATH=/usr/lib/libreoffice/program:/usr/lib/x86_64-linux-gnu/:/usr/local/lib/x86_64-linux-gnu/:$LD_LIBRARY_PATH
-export PYTHONPATH=/usr/lib/python3/dist-packages:/usr/local/lib/python3.8/dist-packages/:$PYTHONPATH
+# export LD_LIBRARY_PATH=/usr/lib/libreoffice/program:/usr/lib/x86_64-linux-gnu/:/usr/local/lib/x86_64-linux-gnu/:$LD_LIBRARY_PATH
+# TODO(lsmith,2025-07-14): Setting PYTHONPATH was causing site-wide packages to
+# leak into my venv; I haven't used GNU Radio in years, so, unlikely this is
+# still necessary. Also, it's hard-coded to 3.8 which is wrong for my 22.04
+# system (3.10).
+# ~~~~
+# export PYTHONPATH=/usr/lib/python3/dist-packages:/usr/local/lib/python3.8/dist-packages/:$PYTHONPATH
+# ~~~~
 
 # Python path
-export PYTHONPATH=/usr/local/lib/python3/dist-packages:$PYTHONPATH
+# ibid of above explanation
+# ~~~~
+# export PYTHONPATH=/usr/local/lib/python3/dist-packages:$PYTHONPATH
+# ~~~~
 
 export STOW_DIR=/usr/local/stow
 
@@ -91,3 +100,10 @@ if [ -d $JAVA_HOME ]; then
     export JAVA_HOME
     export PATH=$PATH:$JAVA_HOME/bin
 fi
+
+if [ -f ~/.profile_work ]; then
+    . ~/.profile_work
+fi
+
+# Created by `pipx` on 2025-11-07 21:05:49
+export PATH="$PATH:/home/logan/.local/bin"

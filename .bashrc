@@ -109,10 +109,6 @@ function cd_n() {
 }
 alias ..=cd_n
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
 # NOTE: My .gitconfig has `git root` as an alias for the `rev-parse` bit below
 alias gr='cd $(git rev-parse --show-toplevel)'
 
@@ -124,9 +120,6 @@ alias gr='cd $(git rev-parse --show-toplevel)'
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
-
-alias add-show='lsmedia show'
-alias add-movie='lsmedia movie'
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -151,3 +144,6 @@ alias xdg-open="xdg-open &> /dev/null"
 # if [ -d "/opt/Xilinx" ]; then
 #     source "/opt/Xilinx/14.7/ISE_DS/settings64.sh"
 # fi
+
+# Created by `pipx` on 2025-11-07 21:05:49
+export PATH="$PATH:/home/logan/.local/bin"

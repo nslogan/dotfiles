@@ -4,7 +4,7 @@ __pycache__/
 
 # Environments
 .env
-.venv
+.venv*
 env/
 venv/
 
@@ -31,3 +31,14 @@ CMakeUserPresets.json
 
 # ccache directory
 .ccache/
+
+# Bazel
+/bazel-*
+# Bazelisk version file
+.bazelversion
+
+# Obsidian (markdown-based note taking app)
+.obsidian/
+
+# gitlab-ci-local (tool for local Gitlab CI development)
+.gitlab-ci-local/
