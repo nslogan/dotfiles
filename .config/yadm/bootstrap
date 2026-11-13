@@ -92,6 +92,8 @@ echo \
 # revisit if I start using my personal Linux laptop more
 # curl -sS https://download.spotify.com/debian/pubkey.gpg | sudo apt-key add - 
 # echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+curl -sS https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc | sudo gpg --dearmor --yes -o /etc/apt/keyrings/spotify-archive-keyring.gpg
+echo "deb [signed-by=/etc/apt/keyrings/spotify-archive-keyring.gpg] https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
 
 # Add Visual Studio Code PPA
 curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /etc/apt/keyrings/microsoft-archive-keyring.gpg

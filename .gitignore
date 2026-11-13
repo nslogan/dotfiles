@@ -42,3 +42,5 @@ CMakeUserPresets.json
 
 # gitlab-ci-local (tool for local Gitlab CI development)
 .gitlab-ci-local/
+
+**/.claude/settings.local.json

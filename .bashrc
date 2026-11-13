@@ -147,3 +147,4 @@ alias xdg-open="xdg-open &> /dev/null"
 
 # Created by `pipx` on 2025-11-07 21:05:49
 export PATH="$PATH:/home/logan/.local/bin"
+export PATH="$HOME/.local/bin:$PATH"
